@@ -1,16 +1,17 @@
 package appewtc.masterung.hellodji3;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import dji.midware.data.manager.P3.ServiceManager;
 import dji.sdk.api.DJIDrone;
 import dji.sdk.api.DJIDroneTypeDef;
 import dji.sdk.interfaces.DJIGerneralListener;
 import dji.sdk.interfaces.DJIReceivedVideoDataCallBack;
 import dji.sdk.widget.DjiGLSurfaceView;
 
-public class FPVActivity extends AppCompatActivity {
+public class FPVActivity extends Activity{
 
     //Explicit
     private static final String TAG = "MyApp";
@@ -45,8 +46,8 @@ public class FPVActivity extends AppCompatActivity {
         //Choose Type Drone
         DJIDrone.initWithType(this.getApplicationContext(), DJIDroneTypeDef.DJIDroneType.DJIDrone_Phantom3_Advanced);
 
-
-        DJIDrone.connectToDrone(); // Connect to the drone
+        // Connect to the drone
+        DJIDrone.connectToDrone();
 
         mDjiGLSurfaceView = (DjiGLSurfaceView)findViewById(R.id.DjiSurfaceView_02);
         mDjiGLSurfaceView.start();
@@ -64,6 +65,23 @@ public class FPVActivity extends AppCompatActivity {
 
     } // onCreate
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        DJIDrone.getDjiMC().startUpdateTimer(1000); // Start the update timer for MC to update info
+        ServiceManager.getInstance().pauseService(false);
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        DJIDrone.getDjiMC().stopUpdateTimer(); // Stop the update timer for MC to update info
+        ServiceManager.getInstance().pauseService(true);
+
+    }
 
     @Override
     protected void onDestroy() {
