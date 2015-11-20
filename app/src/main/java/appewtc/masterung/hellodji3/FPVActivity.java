@@ -32,7 +32,7 @@ public class FPVActivity extends Activity{
                     DJIDrone.checkPermission(getApplicationContext(), new DJIGerneralListener() {
                         @Override
                         public void onGetPermissionResult(int result) {
-                            Log.e(TAG, "Permission ==> " + result);
+                            Log.d(TAG, "Permission ==> " + result);
                         }
                     });
 
